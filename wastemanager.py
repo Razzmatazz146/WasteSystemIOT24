@@ -92,5 +92,7 @@ def code_check(button):
         return
 
 #that buzzes the alarm for as long as it is receiving true. 
-def start_alarm():
-    pass
+def start_alarm(duration):
+    GPIO.output(BUZZER, GPIO.HIGH)
+    time.sleep(duration)
+    GPIO.output(BUZZER, GPIO.LOW)
