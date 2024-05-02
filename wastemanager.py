@@ -69,8 +69,13 @@ def get_level():
 
 # compares current_level to the provided threshold which 
 # returns true if current_level goes over threshold. 
-def is_full(threshold):
-    pass
+def is_full():
+    global level
+    global full_threshold
+    if level > full_threshold:
+        return True
+    else:
+        return False
 
 # gets current_level and displays it on a GUI and on the LED screen 
 # in real-time. Can simply use the LED Screen as a bar, like a battery level on a phone.
