@@ -3,6 +3,7 @@ import time
 EMPTY = 0
 FULL = 1
 PASSCODE = ['R', 'B', 'B', 'R']
+is_unlocked = False
 
 # in real time, gets the distance from the sensor to the surface (bottom of container or waste) 
 # and returns the current_level. Probably have a way in this function to check if the container
@@ -43,11 +44,12 @@ def code_check(button):
     
     # Checks if time elapsed is greater than 4 seconds
     if end - start > 4:
-        return False
+        return
     elif input != PASSCODE:
-        return False
+        return
     else:
-        return True
+        is_unlocked = True
+        return
 
 #that buzzes the alarm for as long as it is receiving true. 
 def start_alarm():
