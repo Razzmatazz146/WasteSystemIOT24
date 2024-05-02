@@ -1,4 +1,31 @@
+import RPi.GPIO as GPIO
 import time
+
+# Set up GPIO pins for Passive Buzzer
+BUZZER = 17
+GPIO.setup(BUZZER, GPIO.OUT)
+
+# Set up GPIO pins for Ultrasonic Distance Sensor
+TRIGGER = 23
+ECHO = 24
+GPIO.setup(TRIGGER, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+
+# Set up GPIO pins for Buttons
+BUTTON1 = 5
+BUTTON2 = 6
+GPIO.setup(BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+# Set up GPIO pins for LED Bar Graph
+DATA = 16
+CLK  = 18
+GPIO.setup(DATA, GPIO.OUT)
+GPIO.setup(CLK, GPIO.OUT)
+
+CmdMode  = 0x0000  # Work on 8-bit mode
+ON       = 0x00ff  # 8-byte 1 data
+SHUT     = 0x0000  # 8-byte 0 data
 
 EMPTY = 0
 FULL = 1
@@ -52,4 +79,4 @@ def code_check(button):
 
 #that buzzes the alarm for as long as it is receiving true. 
 def start_alarm():
-   pass
+    pass
