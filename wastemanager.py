@@ -12,10 +12,10 @@ GPIO.setup(TRIGGER, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 
 # Set up GPIO pins for Buttons
-BUTTON1 = 5
-BUTTON2 = 6
-GPIO.setup(BUTTON1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(BUTTON2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+RED_BUTTON = 5
+BLUE_BUTTON = 6
+GPIO.setup(RED_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BLUE_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Set up GPIO pins for LED Bar Graph
 DATA = 16
@@ -36,7 +36,21 @@ is_unlocked = False
 # and returns the current_level. Probably have a way in this function to check if the container
 # is opened without being unlocked using is_unlocked.
 def get_level():
-    pass
+    GPIO.output(TRIGGER, True)
+    time.sleep(0.00001)
+    GPIO.output(TRIGGER, False)
+
+    while GPIO.input(ECHO) == False:
+        start_time = time.time()
+
+    while GPIO.input(ECHO) == True:
+        end_time = time.time()
+
+    echo_duration = end_time - start_time
+
+    distance = echo_duration * 34300 / 2
+
+    return distance
 
 # compares current_level to the provided threshold which 
 # returns true if current_level goes over threshold. 
