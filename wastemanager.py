@@ -1,5 +1,18 @@
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
+import tkinter as tk
+import threading
+from tkinter import ttk
 import time
+
+class GPIO:
+    OUT = 0
+    IN = 0
+    PUD_UP = 0
+    def setup(a, b, *args, **kwargs):
+        return
+    
+# Application Root
+root = tk.Tk()
 
 # Set up GPIO pins for Passive Buzzer
 BUZZER = 17
@@ -30,7 +43,9 @@ SHUT     = 0x0000  # 8-byte 0 data
 EMPTY = 0
 FULL = 1
 PASSCODE = ['R', 'B', 'B', 'R']
-is_unlocked = False
+full_threshold = tk.StringVar(root)
+level = 0.5
+is_locked = True
 
 # in real time, gets the distance from the sensor to the surface (bottom of container or waste) 
 # and returns the current_level. Probably have a way in this function to check if the container
@@ -51,6 +66,7 @@ def update_visuals(current_level):
 # Receives button inputs and compares it to the passcode. Unlocks if match.
 def code_check(button):
     global PASSCODE
+    global is_locked
     
     # Puts the initial button pressed into the input array
     input = [button]
@@ -74,9 +90,41 @@ def code_check(button):
     elif input != PASSCODE:
         return
     else:
-        is_unlocked = True
+        is_locked = False
         return
 
 #that buzzes the alarm for as long as it is receiving true. 
 def start_alarm():
     pass
+
+def set_threshold():
+    try:
+        threshold = float(full_threshold.get())
+        if threshold > 100 or threshold < 0:
+            raise ValueError
+        else:
+            print('New threshold: ', threshold, '%')
+    except ValueError:
+        print('Enter a number from 0 to 100')
+
+def main():
+    try:
+        while True:
+            level = get_level()
+            if is_locked and level < EMPTY:
+                start_alarm()
+            else:
+                update_visuals()
+    except Exception:
+        print(Exception)
+    finally:
+        GPIO.cleanup()
+
+wasteLevelLabel = ttk.Label(root, text='Current Waste Level: 0%')
+wasteLevelLabel.grid(column=0, row=0)
+thresholdEntry = ttk.Entry(root, textvariable=full_threshold)
+thresholdEntry.grid(column=0, row=1)
+setThresholdButton = ttk.Button(root, text='Set Threshold', command=set_threshold)
+setThresholdButton.grid(column=0, row=2)
+
+tk.mainloop()
