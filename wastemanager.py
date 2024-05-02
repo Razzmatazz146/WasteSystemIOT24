@@ -21,8 +21,7 @@ def is_full(threshold):
 def update_visuals(current_level):
     pass
 
-# that returns is_unlocked if provided sequence is correctly given within a 4 second span.
-# Compares to a provided PASSCODE.
+# Receives button inputs and compares it to the passcode. Unlocks if match.
 def code_check(button):
     global PASSCODE
     
@@ -33,7 +32,7 @@ def code_check(button):
     start = time.monotonic()
     
     # For loop that expects the next 3 inputs
-    for i in range(3):
+    for i in range(len(PASSCODE)-1):
         if 'red button':
             input.append('R')
         elif 'blue button':
