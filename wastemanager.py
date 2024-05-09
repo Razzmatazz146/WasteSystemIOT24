@@ -164,6 +164,8 @@ def main():
                 start_alarm(2)
             elif percentage > threshold:
                 percentage_var.set(f'Current Waste Level: FULL')
+            elif not is_locked:
+                percentage_var.set(f'CONTAINER UNLOCKED')
             else:
                 pass
             time.sleep(1)
