@@ -18,7 +18,7 @@ In the textbar, input a number from **0 - 100**, then click the **'Set Threshold
 
 ### To unlock the container, simply provide the unlock code using the red and blue buttons. 
 
-##By default, the code is "RED, BLUE, BLUE, RED"
+## By default, the code is "RED, BLUE, BLUE, RED"
 
 If unsuccessful, it will simply reset and you can try again. 
 
