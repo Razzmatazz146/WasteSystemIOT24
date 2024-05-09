@@ -100,37 +100,65 @@ def get_percentage(distance):
     currentpercentage = (100 - (distance / EMPTY) * 100)
     return currentpercentage
 
+def red_button_pressed():
+    print("Red button pressed")
+    return 'R'
+
+def blue_button_pressed():
+    if GPIO.input(BLUE_BUTTON) == GPIO.LOW:
+        print("Blue button pressed")
+        return 'B'
+
 # Receives button inputs and compares it to the passcode. Unlocks if match.
-def code_check(button):
+def code_check():
     global PASSCODE
     global is_locked
-    
-    # Puts the initial button pressed into the input array
-    input = [button]
-    
-    # Starts the timer
-    start = time.monotonic()
-    
-    # For loop that expects the next 3 inputs
-    for i in range(len(PASSCODE)-1):
-        if 'red button':
-            input.append('R')
-        elif 'blue button':
-            input.append('B')
-    
-    # Stops the timer
-    end = time.monotonic()
-    
-    # Checks if time elapsed is greater than 4 seconds
-    if end - start > 4:
-        return
-    elif input != PASSCODE:
-        return
-    else:
-        is_locked = False
-        return
 
-#that buzzes the alarm for as long as it is receiving true. 
+    # Initialize the input array
+    input = []
+
+    while True:
+        # Check if a button is pressed
+        if GPIO.input(RED_BUTTON) == GPIO.LOW:
+            print("Red button pressed")
+            input.append('R')
+            print(input)
+            start = time.monotonic()  # Start the timer
+        elif GPIO.input(BLUE_BUTTON) == GPIO.LOW:
+            print("Blue button pressed")
+            input.append('B')
+            print(input)
+            start = time.monotonic()  # Start the timer
+
+        # If a button has been pressed
+        if input:
+            end = time.monotonic()
+            
+            # Timeout after 4 seconds and reset the array
+            if end - start > 4:
+                input = []
+                print("Code timeout")
+                time.sleep(1)
+                continue
+
+            # Check if the entered code is correct
+            if input == PASSCODE:
+                is_locked = False
+                print("Correct! Unlocking.")
+                input = []
+                time.sleep(1)
+                continue
+                
+            # Reset array if code is incorrect
+            if len(input) > 3:
+                input = []
+                print("Incorrect")
+                time.sleep(1)
+                continue
+
+        time.sleep(0.1)
+
+#Func that buzzes the alarm for as long as it is receiving true. 
 def start_alarm(duration):
     GPIO.output(BUZZER, GPIO.HIGH)
     time.sleep(duration)
@@ -151,7 +179,8 @@ def main():
         while True:
             level = get_level()
             percentage = get_percentage(level)
-            percentage_var.set(f'Current Waste Level: {percentage}%')
+            rd_perc = round(percentage, 1)
+            percentage_var.set(f'Current Waste Level: {rd_perc}%')
             update_led_bar(percentage)
             if is_locked and level > EMPTY:
                 start_alarm(2)
@@ -170,5 +199,6 @@ setThresholdButton = ttk.Button(root, text='Set Threshold', command=set_threshol
 setThresholdButton.grid(column=0, row=2)
 
 threading.Thread(target=main).start()
+threading.Thread(target=code_check).start()
 
 tk.mainloop()
