@@ -82,6 +82,14 @@ def blue_button_pressed():
         print("Blue button pressed")
         return 'B'
 
+#Func that buzzes the alarm for as long as it is receiving true. 
+def start_alarm(duration):
+    GPIO.output(BUZZER, GPIO.HIGH)
+    print("BEEP")
+    time.sleep(duration)
+    GPIO.output(BUZZER, GPIO.LOW)
+    
+    
 # Receives button inputs and compares it to the passcode. Unlocks if match.
 def code_check():
     global PASSCODE
@@ -94,11 +102,13 @@ def code_check():
         # Check if a button is pressed
         if GPIO.input(RED_BUTTON) == GPIO.LOW:
             print("Red button pressed")
+            start_alarm(0.1)
             input.append('R')
             print(input)
             start = time.monotonic()  # Start the timer
         elif GPIO.input(BLUE_BUTTON) == GPIO.LOW:
             print("Blue button pressed")
+            start_alarm(0.1)
             input.append('B')
             print(input)
             start = time.monotonic()  # Start the timer
@@ -131,12 +141,6 @@ def code_check():
 
         time.sleep(0.1)
 
-#Func that buzzes the alarm for as long as it is receiving true. 
-def start_alarm(duration):
-    GPIO.output(BUZZER, GPIO.HIGH)
-    print("BEEP")
-    time.sleep(duration)
-    GPIO.output(BUZZER, GPIO.LOW)
     
 def set_threshold():
     global threshold
@@ -161,11 +165,11 @@ def main():
             print("Level:", level)
             if is_locked and level > EMPTY:
                 percentage_var.set('CONTAINER OPEN!')
-                start_alarm(2)
+                start_alarm(5)
             elif percentage > threshold:
                 percentage_var.set(f'Current Waste Level: FULL')
             elif not is_locked:
-                percentage_var.set(f'CONTAINER UNLOCKED')
+                percentage_var.set(f'UNLOCKED')
             else:
                 pass
             time.sleep(1)
